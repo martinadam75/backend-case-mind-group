@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import './config/database';
 import authRoutes from './routes/authRoutes';
+import articleRoutes from './routes/articleRoutes';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Rotas da API
 app.use('/api/auth', authRoutes);
+app.use('/api/articles', articleRoutes);
 
 // Teste servidor
 app.get('/', (req: Request, res: Response) => {

@@ -18,3 +18,19 @@ Content-Type: application/json
   "email": "martin@teste.com",
   "senha": "123"
 }
+
+### Listar Artigos (Aberto)
+GET http://localhost:3333/api/articles
+
+###
+
+### Criar Artigo (Fechado)
+POST http://localhost:3333/api/articles
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJ0aW5AdGVzdGUuY29tIiwiaWF0IjoxNzc5MDU5NDk1LCJleHAiOjE3NzkxNDU4OTV9.dqDh3ADJo3WC1WisQXHFrN-BTD5ZKdlH2nDG1mRgsKo
+
+{
+  "titulo": "Meu Primeiro Artigo",
+  "conteudo": "Este é o conteúdo incrível do meu artigo.",
+  "imagem_banner": "https://url-da-imagem.com/foto.jpg"
+}
