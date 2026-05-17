@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import './config/database';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -14,7 +15,7 @@ app.use(express.json());
 
 // Teste servidor
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello World! API funcional' });
+  res.json({ message: 'Hello World' });
 });
 
 app.listen(port, () => {
