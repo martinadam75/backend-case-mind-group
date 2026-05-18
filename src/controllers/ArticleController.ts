@@ -19,20 +19,23 @@ export const getArticles = async (req: AuthRequest, res: Response): Promise<any>
 
 export const createArticle = async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { titulo, conteudo, imagem_banner } = req.body;
-    const autor_id = req.user?.id;
+    const { titulo, conteudo, imagem_banner, resumo, categoria, tags } = req.body;
+    const autor_id = req.user?.id; 
 
     if (!titulo || !conteudo) {
       return res.status(400).json({ message: 'Título e conteúdo são obrigatórios.' });
     }
 
+    const tagsString = tags ? JSON.stringify(tags) : null;
+
     const [result]: any = await pool.query(
-      'INSERT INTO articles (titulo, conteudo, autor_id, imagem_banner) VALUES (?, ?, ?, ?)',
-      [titulo, conteudo, autor_id, imagem_banner || null]
+      'INSERT INTO articles (titulo, conteudo, autor_id, imagem_banner, resumo, categoria, tags) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [titulo, conteudo, autor_id, imagem_banner || null, resumo || null, categoria || null, tagsString]
     );
 
     return res.status(201).json({ message: 'Artigo criado com sucesso!', articleId: result.insertId });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: 'Erro ao criar artigo.' });
   }
 };
@@ -40,11 +43,13 @@ export const createArticle = async (req: AuthRequest, res: Response): Promise<an
 export const updateArticle = async (req: AuthRequest, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
-    const { titulo, conteudo, imagem_banner } = req.body;
+    const { titulo, conteudo, imagem_banner, resumo, categoria, tags } = req.body;
+    
+    const tagsString = tags ? JSON.stringify(tags) : null;
 
     const [result]: any = await pool.query(
-      'UPDATE articles SET titulo = ?, conteudo = ?, imagem_banner = ? WHERE id = ?',
-      [titulo, conteudo, imagem_banner || null, id]
+      'UPDATE articles SET titulo = ?, conteudo = ?, imagem_banner = ?, resumo = ?, categoria = ?, tags = ? WHERE id = ?',
+      [titulo, conteudo, imagem_banner || null, resumo || null, categoria || null, tagsString, id]
     );
 
     if (result.affectedRows === 0) {
