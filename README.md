@@ -1,4 +1,4 @@
-# TechBlog API - Backend
+# TechBlog API - Backend Mind Group Case
 
 Esta é a API REST robusta que suporta o ecossistema do TechBlog. Desenvolvida em Node.js com TypeScript, utiliza o Express como framework de roteamento e interage diretamente com um banco de dados relacional MySQL.
 
@@ -28,7 +28,7 @@ Crie um arquivo .env na raiz do projeto com base nas seguintes chaves:
     DB_HOST=localhost
     DB_USER=root
     DB_PASS=
-    DB_NAME=mind_db
+    DB_NAME=mind_blog
     JWT_SECRET=seu_token_secreto_super_seguro
 
 3. **Iniciar o banco de dados MySQL (via Docker):**
