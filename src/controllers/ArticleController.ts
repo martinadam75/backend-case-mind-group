@@ -4,9 +4,9 @@ import pool from '../config/database';
 
 export const getArticles = async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    // Traz os artigos junto com o nome do autor
+    // Traz os artigos junto com o nome e a foto do autor
     const [articles]: any = await pool.query(`
-      SELECT a.*, u.nome as autor_nome 
+      SELECT a.*, u.nome as autor_nome, u.foto_url as autor_foto 
       FROM articles a 
       JOIN users u ON a.autor_id = u.id 
       ORDER BY a.data_publicacao DESC
@@ -82,8 +82,9 @@ export const deleteArticle = async (req: AuthRequest, res: Response): Promise<an
 export const getComments = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
   try {
+    // Adicionado o u.foto_url na query de comentários
     const [comments] = await pool.query(
-      `SELECT c.id, c.content, c.created_at, u.nome as autor_nome 
+      `SELECT c.id, c.content, c.created_at, u.nome as autor_nome, u.foto_url 
        FROM comments c 
        JOIN users u ON c.user_id = u.id 
        WHERE c.article_id = ? 
