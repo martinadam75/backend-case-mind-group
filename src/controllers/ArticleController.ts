@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import pool from '../config/database';
 
@@ -75,5 +75,42 @@ export const deleteArticle = async (req: AuthRequest, res: Response): Promise<an
     return res.status(200).json({ message: 'Artigo deletado com sucesso!' });
   } catch (error) {
     return res.status(500).json({ message: 'Erro ao deletar artigo.' });
+  }
+};
+
+// Buscar comentários de um artigo
+export const getComments = async (req: Request, res: Response): Promise<any> => {
+  const { id } = req.params;
+  try {
+    const [comments] = await pool.query(
+      `SELECT c.id, c.content, c.created_at, u.nome as autor_nome 
+       FROM comments c 
+       JOIN users u ON c.user_id = u.id 
+       WHERE c.article_id = ? 
+       ORDER BY c.created_at ASC`,
+      [id]
+    );
+    return res.json(comments);
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao buscar comentários' });
+  }
+};
+
+// Criar um novo comentário
+export const addComment = async (req: AuthRequest, res: Response): Promise<any> => {
+  const { id } = req.params; 
+  const { content } = req.body;
+  const user_id = req.user?.id; 
+
+  if (!content) return res.status(400).json({ message: 'Conteúdo vazio.' });
+
+  try {
+    await pool.query(
+      'INSERT INTO comments (article_id, user_id, content) VALUES (?, ?, ?)',
+      [id, user_id, content]
+    );
+    return res.status(201).json({ message: 'Comentário publicado!' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao publicar comentário.' });
   }
 };
