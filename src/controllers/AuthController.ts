@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthRequest } from '../middlewares/authMiddleware';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../config/database';
@@ -72,5 +73,46 @@ export const login = async (req: Request, res: Response): Promise<any> => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Erro interno no servidor.' });
+  }
+};
+
+export const getProfile = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.id; // Capturado pelo middleware de autenticação
+    const [rows]: any = await pool.query(
+      'SELECT id, nome, email, foto_url, bio, created_at FROM users WHERE id = ?', 
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    return res.json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erro ao buscar perfil no banco de dados.' });
+  }
+};
+
+// Atualizar os dados do perfil diretamente no banco
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const userId = req.user?.id;
+    const { nome, foto_url, bio } = req.body;
+
+    if (!nome) {
+      return res.status(400).json({ message: 'O nome é obrigatório.' });
+    }
+
+    await pool.query(
+      'UPDATE users SET nome = ?, foto_url = ?, bio = ? WHERE id = ?',
+      [nome, foto_url || null, bio || null, userId]
+    );
+
+    return res.json({ message: 'Perfil atualizado com sucesso!' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erro ao atualizar perfil.' });
   }
 };
