@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import './config/database';
 import authRoutes from './routes/authRoutes';
 import articleRoutes from './routes/articleRoutes';
+import path from 'path';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 // Rotas da API
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // Teste servidor
 app.get('/', (req: Request, res: Response) => {
